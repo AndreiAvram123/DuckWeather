@@ -34,6 +34,7 @@ import okhttp3.Response;
 //activity to another
 public class MainActivity extends AppCompatActivity {
     public static final String KEY_PARCELABLE_DAILY_ARRAY = "DAILY_ARRAY";
+    public static final String KEY_PARCELABLE_HOURLY_ARRAY = "HOURLY_ARRAY";
     private static final String TAG = MainActivity.class.getSimpleName();
     private TextView temperatureTextView;
     private TextView timeTextView;
@@ -75,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void startHourlyActivity() {
          if(dataFetched){
-
+              Intent hourlyActivityIntent = new Intent(this,HourlyActivity.class);
+              hourlyActivityIntent.putExtra(KEY_PARCELABLE_HOURLY_ARRAY,forecast.getTwoDaysWeather());
+              startActivity(hourlyActivityIntent);
          }else {
              Toast.makeText(this, "Please wait,fetching data...", Toast.LENGTH_SHORT).show();
          }
@@ -259,8 +262,13 @@ public class MainActivity extends AppCompatActivity {
         temperatureTextView.setText("" + currentWeather.getTemperature());
         summaryTextView.setText(currentWeather.getSummary());
         humidityTextView.setText(currentWeather.getHumidity()+"");
-        precipitationTextView.setText(currentWeather.getPrecipitationProbability()+"");
-    }
+
+        if(currentWeather.getPrecipitationProbability()==0.0){
+            precipitationTextView.setText("NONE");
+        }else {
+            precipitationTextView.setText(currentWeather.getPrecipitationProbability() + "");
+        }
+        }
 
     /**
      *
