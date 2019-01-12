@@ -1,0 +1,39 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SimpleTextViewStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">30sp</item>
+        </style>
+
+    <style name="SimpleTextViewStyleForLists">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="default_style_text_view">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">20sp </item>
+        <item name="android:gravity">center</item>
+
+    </style>
+
+        <style
+            name ="default_style_text_view_detailed"
+            >
+            <item name="android:textSize">20sp </item>
+            <item name="android:gravity">center</item>
+            <item name="android:textColor">#ffffff</item>
+            <item name="android:layout_weight">0.08</item>
+        </style>
+
+</resources>

@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">DuckWeather</string>
+    <string name="dialog_fragment_key">dialogFragmentKey</string>
+    <string name="api_key">b9e08249fab5cb0a5a5372bcea7bf54e</string>
+    <string name="dark_sky_message"><a href="https://darksky.net/powerby">Powered by Dark Sky</a></string>
+    <string name="default_temperature">40</string>
+    <string name="default_time">Monday 16:20</string>
+    <string name="default_location">Manchester</string>
+    <string name="daily_forecast_button">DAILY</string>
+    <string name="key_for_dailyWeather_array">daily_weather_array</string>
+    <string name="secretKey">b9e08249fab5cb0a5a5372bcea7bf54e</string>
+    <string name="humidityLabel">Humidity</string>
+    <string name="precipitationLabel">Precipitation</string>
+    <string name="week_summary_default">Cloudy</string>
+    <string name="summary_label">SUMMARY: </string>
+    <string name="time_label">TIME</string>
+    <string name="sunrise_time_label">SUNRISE</string>
+    <string name="sunset_time_label">SUNSET</string>
+    <string name="temperature_min_label">MIN</string>
+    <string name="temperature_min_time_label">MIN TIME</string>
+    <string name="temperature_max_label">MAX</string>
+    <string name="temperature_max_time_label">MAX TIME</string>
+    <string name="humidity_label">HUMIDITY</string>
+    <string name="hourly_forecast_button">HOURLY</string>
+</resources>

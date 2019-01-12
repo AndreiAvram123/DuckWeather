@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="#0000CD">
+
+
+    <ImageView
+        android:id="@+id/back_image_view_daily_detailed"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutValues"
+        android:layout_width="158dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayoutLabels"
+        app:layout_constraintTop_toBottomOf="@+id/summaryValue">
+
+        <TextView
+            android:id="@+id/timeValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/sunriseTimeValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/temperatureMinTimeValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/sunsetTimeValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/temperatureMinValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/temperatureMaxValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/temperatureMaxTimeValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/himidityValue"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutLabels"
+        android:layout_width="221dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/summaryValue">
+
+        <TextView
+            android:id="@+id/temperatureMinLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_min_label" />
+
+        <TextView
+            android:id="@+id/timeLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/time_label" />
+
+        <TextView
+            android:id="@+id/sunriseTimeLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sunrise_time_label" />
+
+        <TextView
+            android:id="@+id/sunsetTimeLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sunset_time_label" />
+
+        <TextView
+            android:id="@+id/temperatureMinTimeLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_min_time_label" />
+
+        <TextView
+            android:id="@+id/temperatureMaxLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_max_label" />
+
+        <TextView
+            android:id="@+id/temperatureMaxTimeLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_max_time_label" />
+
+        <TextView
+            android:id="@+id/humidityLabel"
+            style="@style/default_style_text_view_detailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/humidity_label" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/summaryValue"
+        style="@style/default_style_text_view_detailed"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back_image_view_daily_detailed" />
+
+</android.support.constraint.ConstraintLayout>
