@@ -13,6 +13,7 @@ public class CurrentWeather {
     private double precipitationProbability;
     private  double humidity;
 
+
     public void setSummary(String summary){
         this.summary=summary;
     }

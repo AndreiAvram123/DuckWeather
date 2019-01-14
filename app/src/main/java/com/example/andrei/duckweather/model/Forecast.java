@@ -8,6 +8,8 @@ public class Forecast {
         return currentWeather;
     }
 
+
+
     public void setCurrentWeather(CurrentWeather currentWeather) {
         this.currentWeather = currentWeather;
     }
@@ -27,5 +29,6 @@ public class Forecast {
     public HourlyWeather[] getTwoDaysWeather(){
         return twoDaysWeather;
     }
+
 
 }

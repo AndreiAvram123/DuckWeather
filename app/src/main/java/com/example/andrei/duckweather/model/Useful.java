@@ -14,4 +14,6 @@ public class Useful {
     public static int convertToCelsius(double fahrenheit) {
         return (int) ((fahrenheit-32)/1.8);
     }
+
+
 }

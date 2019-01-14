@@ -22,4 +22,6 @@
     <string name="temperature_max_time_label">MAX TIME</string>
     <string name="humidity_label">HUMIDITY</string>
     <string name="hourly_forecast_button">HOURLY</string>
+    <string name="title_activity_change_location">Map</string>
+
 </resources>

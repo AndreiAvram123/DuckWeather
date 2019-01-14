@@ -31,7 +31,7 @@ public class HourlyActivity extends AppCompatActivity {
                            parcelableArray.length,
                            HourlyWeather[].class
 
-        );
+                                         );
 
         setUpRecyclerView();
     }
@@ -40,7 +40,7 @@ public class HourlyActivity extends AppCompatActivity {
         recyclerView.setAdapter(new HourlyWeatherAdapter(twoDaysWeather));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SpecialDividerItem(5));
+        recyclerView.addItemDecoration(new SpecialDividerItem(10));
     }
 
     private void initialiseViews() {
