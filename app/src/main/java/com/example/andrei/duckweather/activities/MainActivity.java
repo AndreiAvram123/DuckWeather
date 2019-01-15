@@ -1,15 +1,13 @@
 package com.example.andrei.duckweather.activities;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,12 +16,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,9 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.andrei.duckweather.R;
+import com.example.andrei.duckweather.model.AppDatabase;
 import com.example.andrei.duckweather.model.Constraints;
 import com.example.andrei.duckweather.model.CurrentWeather;
 import com.example.andrei.duckweather.model.DailyWeather;
+import com.example.andrei.duckweather.model.Dao;
 import com.example.andrei.duckweather.model.Forecast;
 import com.example.andrei.duckweather.model.HourlyWeather;
 import com.example.andrei.duckweather.model.Useful;
@@ -41,10 +37,11 @@ import com.example.andrei.duckweather.model.Useful;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
-import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private TextView summaryTextView;
     private TextView humidityTextView;
     private TextView precipitationTextView;
-    private TextView locationTextView;
+    private TextView locationNameTextView;
     private DrawerLayout drawerLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Forecast forecast;
@@ -75,13 +72,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private String longitude;
     private String locationName;
     private SharedPreferences sharedPreferences;
+    private Dao dao;
 
     /**
      * The user may press the daily forecast button
      * or the hourly forecast button
      * but the data has not been downloaded yet
+     * or has not been loaded from the database
      * This can happen when the user uses a slow
-     * internet connection
+     * internet connection or the background thread
+     * is still working on getting the data
      */
     private boolean dataFetched;
     private boolean isAppFullscreen;
@@ -90,17 +90,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-
+        initializeViews();
         getSettings();
-
-
+        getDatabaseDao();
         isAppFullscreen = false;
 
         dataFetched = false;
 
-        initializeViews();
+
 
         if(isNetworkAvailable()) {
             pushRequestToServer();
@@ -109,25 +106,55 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
     }
 
+    private void getDatabaseDao() {
+        AppDatabase appDatabase = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class,"room_database").build();
+        dao = appDatabase.dao();
+    }
+
+    private void getDataFromDatabase() {
+        Thread backgroundThread = new Thread(()->{
+            forecast = new Forecast();
+            forecast.setCurrentWeather(dao.getCurrentWeather());
+            forecast.setCurrentWeekWeather(dao.getCurrentWeekWeather());
+            forecast.setTwoDaysWeather(dao.getTwoDaysWeather());
+            runOnUiThread(this::updateUI);
+            dataFetched = true;
+        });
+        backgroundThread.start();
+    }
+
     private void getSettings() {
+         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
          latitude = sharedPreferences.getString(Constraints.KEY_LATITUDE_SHARED_PREFERENCES,"53.4808");
          longitude = sharedPreferences.getString(Constraints.KEY_LONGITUDE_SHARED_PREFERENCES,"2.2426");
-         locationName = (sharedPreferences.getString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,"Manchester"));
+         locationName = sharedPreferences.getString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,"Manchester");
+         locationNameTextView.setText(locationName);
 
+    }
+
+    private void saveSettings() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constraints.KEY_LONGITUDE_SHARED_PREFERENCES,longitude);
+        editor.putString(Constraints.KEY_LATITUDE_SHARED_PREFERENCES,latitude);
+        editor.putString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,locationName);
+        editor.apply();
+        Toast.makeText(this, "Location change successfully", Toast.LENGTH_SHORT).show();
     }
 
     private void alertUserAboutInternetConnection() {
         new AlertDialog.Builder(this)
-                .setMessage("There is no internet connection.Connect and come back.")
+                .setMessage("There is no internet connection.The app will switch to offline mode using stored data")
                 .setTitle("INTERNET CONNECTION")
-                .setPositiveButton("OK", (dialog, which) -> finish())
+                .setPositiveButton("SWITCH", (view,which)-> getDataFromDatabase())
+                .setNegativeButton("EXIT",(view,which)->finish())
                 .show();
 
     }
 
     private void initializeViews() {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout_main);
-        locationTextView = findViewById(R.id.location_text_view_main);
+        locationNameTextView = findViewById(R.id.location_text_view_main);
         temperatureTextView=findViewById(R.id.temperatureTextView);
         timeTextView=findViewById(R.id.timeTextView);
         summaryTextView=findViewById(R.id.summaryTextView);
@@ -177,13 +204,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 .show();
     }
 
-    private void saveSettings() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constraints.KEY_LONGITUDE_SHARED_PREFERENCES,longitude);
-        editor.putString(Constraints.KEY_LATITUDE_SHARED_PREFERENCES,latitude);
-        editor.putString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,locationName);
-        editor.apply();
-    }
 
     private void startChangeLocationActivity() {
         Intent startLocationActivityIntent = new Intent(this,ChangeLocationActivity.class);
@@ -275,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                             forecast= new Forecast();
                             getForecast(jsonData);
                             updateUI();
+                            updateLocalDatabase();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -282,6 +303,30 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
             }
         });
+    }
+
+    /**
+     * The method is called to replace the existing
+     * data in the room database
+     * It erases all data from the current database
+     * and then repopulates it with fresh data
+     * This operation must be done in the background
+     */
+    private void updateLocalDatabase() {
+        Thread backgroundThread  = new Thread(()->{
+            //delete all data if exists
+            dao.deleteAllDataFromCurrentWeather();
+            dao.deleteAllDataFromDailyWeather();
+            dao.deleteAllDataFromHourlyWeather();
+            //insert new data
+            dao.insertCurrentWeather(forecast.getCurrentWeather());
+            dao.insertTwoDaysWeather(forecast.getTwoDaysWeather());
+            dao.insertCurrentWeekWeather(forecast.getCurrentWeekWeather());
+        });
+        backgroundThread.start();
+
+
+
     }
 
     private void getForecast(String jsonData) throws JSONException {
@@ -308,20 +353,39 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         //get the weather for each day
         JSONArray dailyJsonArray = daily.getJSONArray("data");
         for(int i =0; i < dailyJsonArray.length();i++){
+            String timezone = jsonObject.getString("timezone");
+
             DailyWeather dailyWeather=new DailyWeather();
             JSONObject day = dailyJsonArray.getJSONObject(i);
-            dailyWeather.setTimezone(jsonObject.getString("timezone"));
+
             dailyWeather.setWeekSummary(convertWeekSummary(daily.getString("summary")));
-             dailyWeather.setTime(day.getLong("time"));
-            dailyWeather.setSummary(day.getString("summary"));
-            dailyWeather.setSunriseTime(day.getLong("sunriseTime"));
-            dailyWeather.setSunsetTime(day.getLong("sunsetTime"));
-            dailyWeather.setTemperatureMax(day.getDouble("temperatureMax"));
-            dailyWeather.setTemperatureMin(day.getDouble("temperatureMin"));
+
+            dailyWeather.setDay(Useful.formatTime(
+                    day.getLong("time"),timezone,"EEEE"));
+
+             dailyWeather.setSunriseTime(Useful.formatTime(
+                    day.getLong("sunriseTime"),timezone,"H:mm"
+            ));
+
+            dailyWeather.setSunsetTime(Useful.formatTime(
+                    day.getLong("sunsetTime"),timezone,"H:mm"
+            ));
+
+            dailyWeather.setTemperatureMax(Useful.convertToCelsius
+                    (day.getDouble("temperatureMax")));
+
+            dailyWeather.setTemperatureMin(Useful.convertToCelsius(
+                    day.getDouble("temperatureMin")));
+
             dailyWeather.setHumidity(day.getDouble("humidity"));
-            dailyWeather.setHumidity(day.getDouble("humidity"));
-            dailyWeather.setTemperatureMaxTime(day.getLong("temperatureMaxTime"));
-            dailyWeather.setTemperatureMinTime(day.getLong("temperatureMinTime"));
+
+            dailyWeather.setTemperatureMinTime(Useful.formatTime(
+                    day.getLong("temperatureMinTime"),timezone,"H:mm"));
+
+            dailyWeather.setTemperatureMaxTime(Useful.formatTime(
+                    day.getLong("temperatureMaxTime"),timezone,"H:mm"
+            ));
+
             weekWeather[i] = dailyWeather;
         }
         return weekWeather;
@@ -363,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
      */
     private void updateUI() {
         CurrentWeather currentWeather = forecast.getCurrentWeather();
+        locationNameTextView.setText(locationName);
         timeTextView.setText(currentWeather.getTimeAsString());
         temperatureTextView.setText("" + currentWeather.getTemperature());
         summaryTextView.setText(currentWeather.getSummary());
@@ -392,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         currentWeather.setPrecipitationProbability(currently.getDouble("precipProbability"));
         currentWeather.setSummary(currently.getString("summary"));
         currentWeather.setTime(currently.getLong("time"));
-        currentWeather.setTemperature((int)currently.getDouble("temperature"));
+        currentWeather.setTemperature((Useful.convertToCelsius(currently.getDouble("temperature"))));
         return currentWeather;
     }
 
@@ -471,8 +536,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
            latitude = data.getStringExtra(Constraints.KEY_LATITUDE_REQUEST_LOCATION)+"";
            longitude = data.getStringExtra(Constraints.KEY_LONGITUDE_REQUEST_LOCATION)+"";
-           locationName=(data.getStringExtra(Constraints.KEY_LOCATION_REQUEST_LOCATION));
-           locationTextView.setText(locationName);
+           locationName=data.getStringExtra(Constraints.KEY_LOCATION_REQUEST_LOCATION);
+           locationNameTextView.setText(locationName);
            pushRequestToServer();
 
 
@@ -481,7 +546,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        pushRequestToServer();
+        if(isNetworkAvailable()) {
+            pushRequestToServer();
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 }

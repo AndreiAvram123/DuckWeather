@@ -1,7 +1,12 @@
 package com.example.andrei.duckweather.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+
 
 /**
  * This class is a model for an hour in the forecast
@@ -14,11 +19,19 @@ import android.os.Parcelable;
  * THE ORDER MATTERS , OTHERWISE THERE IS GONNA BE
  * AN ERROR
  */
+@Entity(tableName = "hourly_weather")
 public class HourlyWeather implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
     private String hour;
     private String summary;
     private double humidity;
     private int temperature;
+
+    public HourlyWeather(){
+
+    }
+
      public HourlyWeather(String timezone,String summary,double humidity,double temperature,long unixTime){
          this.summary = summary;
          this.temperature = (int)temperature;
@@ -31,6 +44,7 @@ public class HourlyWeather implements Parcelable {
      *    !!!!!!!!! REMEMBER THAT THE THE NAME OF THE CREATOR MUST BE IN UPPERCASE LETTERS
      *    OTHERWISE IT DOES NOT WORK ,THROWS AN ERROR
      */
+    @Ignore
     public static Creator CREATOR = new Creator() {
         @Override
         public Object createFromParcel(Parcel source) {
@@ -68,22 +82,49 @@ public class HourlyWeather implements Parcelable {
         this.temperature = source.readInt();
     }
 
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * ---------------THE ROOM DATABASE REQUIRES GETTERS AND SETTERS FOR EVERY PRIVATE FIELD IN ORDER TO WORK-------------------------
+     */
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getHour() {
         return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 
     public String getSummary() {
         return summary;
     }
 
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public double getHumidity() {
         return humidity;
+    }
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
     }
 
     public int getTemperature() {
         return temperature;
     }
 
-
-
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
 }

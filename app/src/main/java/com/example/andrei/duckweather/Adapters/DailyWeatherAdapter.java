@@ -43,10 +43,10 @@ public class  DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapt
        if(i ==0)
              viewHolder.dayTextView.setText("TODAY");
         else{
-           viewHolder.dayTextView.setText(currentDay.getDayInWeek());
+           viewHolder.dayTextView.setText(currentDay.getDay());
         }
-        viewHolder.sunsetTimeTextView.setText(currentDay.getSunsetTimeAsString());
-        viewHolder.sunriseTimeTextView.setText(currentDay.getSunriseTimeAsString());
+        viewHolder.sunsetTimeTextView.setText(currentDay.getSunsetTime());
+        viewHolder.sunriseTimeTextView.setText(currentDay.getSunriseTime());
         viewHolder.temperatureMinTextView.setText(currentDay.getTemperatureMin() + "");
         viewHolder.temperatureMaxTextView.setText(currentDay.getTemperatureMax() + "");
         viewHolder.layout.setOnClickListener(listener -> startDetailedDayActivity(i));

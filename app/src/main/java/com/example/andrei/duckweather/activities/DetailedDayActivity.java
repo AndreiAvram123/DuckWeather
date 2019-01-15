@@ -25,14 +25,14 @@ private TextView summaryValue,timeValue,sunriseTimeValue
 
     private void populateViews() {
         DailyWeather dailyWeather = getIntent().getParcelableExtra("daily_weather_object");
-        summaryValue.setText(dailyWeather.getSummary());
-        sunriseTimeValue.setText(dailyWeather.getSunriseTimeAsString());
-        sunsetTimeValue.setText(dailyWeather.getSunsetTimeAsString());
-        timeValue.setText(dailyWeather.getDayInWeek());
+        summaryValue.setText(dailyWeather.getWeekSummary());
+        sunriseTimeValue.setText(dailyWeather.getSunriseTime());
+        sunsetTimeValue.setText(dailyWeather.getSunsetTime());
+        timeValue.setText(dailyWeather.getDay());
         temperatureMaxValue.setText(dailyWeather.getTemperatureMax()+"");
-        temperatureMaxTimeValue.setText(dailyWeather.getTemperatureMaxTimeAsString());
+        temperatureMaxTimeValue.setText(dailyWeather.getTemperatureMaxTime());
         temperatureMinValue.setText(dailyWeather.getTemperatureMin()+"");
-        temperatureMinTimeValue.setText(dailyWeather.getTemperatureMinTimeAsString());
+        temperatureMinTimeValue.setText(dailyWeather.getTemperatureMinTime());
         humidityValue.setText(dailyWeather.getHumidity()+"");
     }
 

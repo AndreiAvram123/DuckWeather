@@ -1,37 +1,146 @@
 package com.example.andrei.duckweather.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+
+@Entity(tableName = "daily_weather")
 public class DailyWeather implements Parcelable {
-    private long time;
-    private String summary;
-    private long sunriseTime;
-    private long sunsetTime;
-    private double temperatureMin;
-    private double temperatureMax;
-    private String timezone;
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    private String day;
+    @ColumnInfo(name = "sunrise_time")
+    private String sunriseTime;
+    @ColumnInfo(name = "sunsetTime")
+    private String sunsetTime;
+    @ColumnInfo(name = "temperature_min")
+    private int temperatureMin;
+    @ColumnInfo(name = "temperature_max")
+    private int temperatureMax;
+    @ColumnInfo(name = "week_summary")
     private String weekSummary;
     private double humidity;
-    private long temperatureMaxTime;
-    private long temperatureMinTime;
-    private String icon;
+    @ColumnInfo(name = "temperature_max_time")
+    private String  temperatureMaxTime;
+    @ColumnInfo(name = "temperature_min_time")
+    private String temperatureMinTime;
 
     public DailyWeather() {
 
     }
 
+
+
+
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * ---------------THE ROOM DATABASE REQUIRES GETTERS AND SETTERS FOR EVERY PRIVATE FIELD IN ORDER TO WORK-------------------------
+     */
+
+
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
+    }
+
+    public void setWeekSummary(String weekSummary) {
+        this.weekSummary = weekSummary;
+    }
+
+    public void setTemperatureMin(int temperatureMin) {
+        this.temperatureMin = temperatureMin;
+    }
+
+    public void setTemperatureMax(int temperatureMax) {
+        this.temperatureMax = temperatureMax;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public int getTemperatureMin() {
+        return temperatureMin;
+    }
+
+    public int getTemperatureMax() {
+        return temperatureMax;
+    }
+
+    public String getSunriseTime() {
+        return sunriseTime;
+    }
+
+    public void setSunriseTime(String sunriseTime) {
+        this.sunriseTime = sunriseTime;
+    }
+
+    public String getSunsetTime() {
+        return sunsetTime;
+    }
+
+    public void setSunsetTime(String sunsetTime) {
+        this.sunsetTime = sunsetTime;
+    }
+
+    public String getWeekSummary() {
+        return weekSummary;
+    }
+
+    public String getTemperatureMaxTime() {
+        return temperatureMaxTime;
+    }
+
+    public void setTemperatureMaxTime(String temperatureMaxTime) {
+        this.temperatureMaxTime = temperatureMaxTime;
+    }
+
+    public String getTemperatureMinTime() {
+        return temperatureMinTime;
+    }
+
+    public void setTemperatureMinTime(String temperatureMinTime) {
+        this.temperatureMinTime = temperatureMinTime;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(day);
+        dest.writeString(sunriseTime);
+        dest.writeString(sunsetTime);
+        dest.writeInt(temperatureMin);
+        dest.writeInt(temperatureMax);
+        dest.writeString(weekSummary);
+    }
+
     public DailyWeather(Parcel in) {
 
-        time = in.readLong();
-        summary = in.readString();
-        sunriseTime = in.readLong();
-        sunsetTime = in.readLong();
-        temperatureMin = in.readDouble();
-        temperatureMax = in.readDouble();
-        timezone = in.readString();
+        day = in.readString();
+        sunriseTime = in.readString();
+        sunsetTime = in.readString();
+        temperatureMin = in.readInt();
+        temperatureMax = in.readInt();
         weekSummary = in.readString();
     }
 
+    @Ignore
     public static final Creator<DailyWeather> CREATOR = new Creator<DailyWeather>() {
         @Override
         public DailyWeather createFromParcel(Parcel in) {
@@ -43,105 +152,5 @@ public class DailyWeather implements Parcelable {
             return new DailyWeather[size];
         }
     };
-
-     public void setTemperatureMaxTime(long temperatureMaxTime) {
-        this.temperatureMaxTime = temperatureMaxTime;
-    }
-     public void setTemperatureMinTime(long temperatureMinTime) {
-        this.temperatureMinTime = temperatureMinTime;
-    }
-
-    public void setIcon(String icon){
-         this.icon = icon;
-     }
-     public void setHumidity(double humidity){
-        this.humidity=humidity;
-    }
-     public void setWeekSummary(String weekSummary){
-         this.weekSummary = weekSummary;
-     }
-     public void setTimezone(String timezone){
-         this.timezone = timezone;
-     }
-     public void setTime(long time){
-         this.time = time;
-     }
-     public void setSummary(String summary){
-         this.summary = summary;
-     }
-     public void setSunriseTime(long sunriseTime){
-         this.sunriseTime = sunriseTime;
-     }
-     public void setSunsetTime (long sunsetTime)
-     {
-         this.sunsetTime = sunsetTime;
-     }
-     public void setTemperatureMin(double temperatureMin){
-         this.temperatureMin = Useful.convertToCelsius(temperatureMin);
-     }
-     public void setTemperatureMax(double temperatureMax){
-         this.temperatureMax = Useful.convertToCelsius(temperatureMax);
-     }
-
-     public String getTemperatureMaxTimeAsString() {
-        return Useful.formatTime(temperatureMaxTime,timezone,"H:mm");
-    }
-     public String getTemperatureMinTimeAsString() {
-        return  Useful.formatTime(temperatureMinTime,timezone,"H:mm");
-    }
-
-    public String getIcon(){
-         return icon;
-     }
-     public long getTime() {
-         return time;
-     }
-     public String getWeekSummary(){
-         return weekSummary;
-     }
-     public String getSummary() {
-         return summary;
-     }
-     public String getTimezone(){
-         return timezone;
-     }
-     public String getSunriseTimeAsString() {
-         return Useful.formatTime(sunriseTime,timezone,"H:mm");
-     }
-     public double getHumidity(){
-        return  humidity;
-     }
-     public String getSunsetTimeAsString(){
-         return Useful.formatTime(sunsetTime,timezone,"H:mm");
-     }
-
-    public int getTemperatureMin() {
-         return (int)temperatureMin;
-     }
-     public int getTemperatureMax() {
-         return (int) temperatureMax;
-     }
-     public String getDayInWeek(){
-         return Useful.formatTime(time,timezone,"EEEE");
-     }
-
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(time);
-        dest.writeString(summary);
-        dest.writeLong(sunriseTime);
-        dest.writeLong(sunsetTime);
-        dest.writeDouble(temperatureMin);
-        dest.writeDouble(temperatureMax);
-        dest.writeString(timezone);
-        dest.writeString(weekSummary);
-    }
 
 }

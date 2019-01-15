@@ -1,51 +1,82 @@
 package com.example.andrei.duckweather.model;
 
+
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 /**
  * This class is a POJO
  * It is intended to store data about the current weather
- * There is no need to override any method
  */
+@Entity(tableName = "current_weather")
 public class CurrentWeather {
+    //the id must be public
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
     private String summary;
     private long time;
     private int temperature;
     private String timezone;
+    @ColumnInfo(name = "precipitationProbability")
     private double precipitationProbability;
-    private  double humidity;
+    private double humidity;
 
+    public CurrentWeather(){
 
-    public void setSummary(String summary){
-        this.summary=summary;
     }
-    public void setTime(long time){
-        this.time=time;
+
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * ---------------THE ROOM DATABASE REQUIRES GETTERS AND SETTERS FOR EVERY PRIVATE FIELD IN ORDER TO WORK-------------------------
+     */
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
-    public void setHumidity(double humidity){
-        this.humidity=humidity;
+
+    public void setTime(long time) {
+        this.time = time;
     }
-    public void setPrecipitationProbability(double precipitationProbability){
-        this.precipitationProbability=precipitationProbability;
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
     }
+
+    public void setPrecipitationProbability(double precipitationProbability) {
+        this.precipitationProbability = precipitationProbability;
+    }
+
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
-    /**
-     *
-     * @param temperature  the temperature in fahrenheit
-     * We convert the temperature in celsius
-     */
-    public void setTemperature(int temperature){
-        this.temperature= Useful.convertToCelsius(temperature);
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
     }
-    public String getSummary(){
+
+    public String getSummary() {
         return summary;
     }
-    public double getPrecipitationProbability(){
+
+    public double getPrecipitationProbability() {
         return precipitationProbability;
     }
-    public double getHumidity(){
+
+    public double getHumidity() {
         return humidity;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public String getTimezone() {
+        return timezone;
     }
 
     /**
@@ -54,12 +85,9 @@ public class CurrentWeather {
      * When we create a new Date object we have to multiply the number
      * of seconds by 1000 in order to convert them in milliseconds
      */
-    public String getTimeAsString(){
-       return Useful.formatTime(time,timezone,"EEEE h:mm");
+    public String getTimeAsString() {
+        return Useful.formatTime(time, timezone, "EEEE h:mm");
     }
 
-    public int getTemperature(){
-        return temperature;
-    }
 
 }

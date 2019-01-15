@@ -1,5 +1,11 @@
 package com.example.andrei.duckweather.model;
 
+/**
+ * This class contains 3 objects:
+ * CurrentWeather
+ * DailyWeather
+ * HourlyWeather
+ */
 public class Forecast {
     private CurrentWeather currentWeather;
     private DailyWeather[] currentWeekWeather;

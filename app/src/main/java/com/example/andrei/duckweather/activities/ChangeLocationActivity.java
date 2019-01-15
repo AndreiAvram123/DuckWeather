@@ -2,6 +2,7 @@ package com.example.andrei.duckweather.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +14,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.andrei.duckweather.R;
 import com.example.andrei.duckweather.model.Constraints;
-import com.example.andrei.duckweather.model.Useful;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +44,7 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
     private ProgressBar loadingMap;
     private TextView loadingMessage;
     private Location currentLocation;
+    private static final int APP_REQUEST_PERMISSIONS =1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,24 +88,51 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //TODO
-        //we need to check if the gps is enabled or not
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        //check if permissions have been granted
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {    //if so request location
+             requestLocation();
+        }else {
+             //if the permission has not been granted for the first time
+            //we try to display a message to the user explaining why we
+            //need that particular permission,very helpful method
+            if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+                Toast.makeText(this, "Location permission is needed in order for the app to work ", Toast.LENGTH_SHORT).show();
+            }
+            //the way we request permissions
+            //this is not gonna be executed if the user explicitly does not want
+            //to give this permission
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},
+                   APP_REQUEST_PERMISSIONS);
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,10,this);
 
 
     }
+
+    private void requestLocation() {
+        if(isGpsEnabled()) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
+        }else{
+          new AlertDialog.Builder(this)
+                           .setTitle("GPS LOCATION REQUIRED")
+                           .setMessage("In order for the location to work you must enable GPS")
+                           .setPositiveButton("Alright",(view,which)->finish())
+                            .show();
+        }
+    }
+
+    /**
+     * @return - true if gps is active
+     */
+    private boolean isGpsEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return  locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -125,6 +152,10 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
         }
     }
 
+    /**
+     * Call the method execute() on the BackgroundTask object
+     * and get the location name in the background
+     */
     private void displayLocation() {
         new BackgroundTask().execute(
                 new LatLng(currentLocation.getLatitude(),
@@ -214,4 +245,25 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
          }
      }
 
+    /**
+     * Request the user to give his permission to use
+     * some features
+     * @param requestCode - return a request code based on the permission that we ask for
+     * @param permissions
+     * @param grantResults - we need grandResults[0],that's where the permission is stored
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case APP_REQUEST_PERMISSIONS:{
+                if(grantResults .length >0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    requestLocation();
+                }else {
+                    Toast.makeText(this, "Permission has not been granted", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
