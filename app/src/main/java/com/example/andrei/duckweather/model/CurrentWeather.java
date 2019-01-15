@@ -14,7 +14,7 @@ public class CurrentWeather {
     //the id must be public
     @PrimaryKey(autoGenerate = true)
     public int id;
-
+    private String icon;
     private String summary;
     private long time;
     private int temperature;
@@ -77,6 +77,14 @@ public class CurrentWeather {
 
     public String getTimezone() {
         return timezone;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     /**

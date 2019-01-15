@@ -7,5 +7,6 @@ public final class Constraints {
     public static final String KEY_LOCATION_SHARED_PREFERENCES = "LOCATION_SHARED_PREFERENCES";
     public static final String KEY_LATITUDE_SHARED_PREFERENCES = "LATITUDE_SHARED_PREFERENCES";
     public static final String KEY_LONGITUDE_SHARED_PREFERENCES = "LONGITUDE_SHARED_PREFERENCES";
+    public static final String KEY_APP_FULLSCREEN = "KEY_APP_FULLSCREEN";
 
 }

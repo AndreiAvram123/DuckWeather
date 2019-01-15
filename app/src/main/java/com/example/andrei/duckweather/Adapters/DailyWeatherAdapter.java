@@ -50,6 +50,7 @@ public class  DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapt
         viewHolder.temperatureMinTextView.setText(currentDay.getTemperatureMin() + "");
         viewHolder.temperatureMaxTextView.setText(currentDay.getTemperatureMax() + "");
         viewHolder.layout.setOnClickListener(listener -> startDetailedDayActivity(i));
+        viewHolder.iconImageView.setImageResource(Useful.getImageId(currentDay.getIcon()));
     }
 
     @Override
@@ -63,6 +64,7 @@ public class  DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapt
       private TextView sunriseTimeTextView;
       private TextView sunsetTimeTextView;
       private TextView dayTextView;
+      private ImageView iconImageView;
       private ConstraintLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
@@ -73,6 +75,7 @@ public class  DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapt
             sunriseTimeTextView = itemView.findViewById(R.id.sunriseTimeTextView);
             sunsetTimeTextView = itemView.findViewById(R.id.sunsetTimeTextView);
             dayTextView = itemView.findViewById(R.id.dayTextView);
+            iconImageView = itemView.findViewById(R.id.summary_icon_simple_list);
 
 
         }

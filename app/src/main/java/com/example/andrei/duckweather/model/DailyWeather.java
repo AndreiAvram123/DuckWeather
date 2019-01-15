@@ -28,6 +28,8 @@ public class DailyWeather implements Parcelable {
     private String  temperatureMaxTime;
     @ColumnInfo(name = "temperature_min_time")
     private String temperatureMinTime;
+    private String icon;
+
 
     public DailyWeather() {
 
@@ -115,6 +117,14 @@ public class DailyWeather implements Parcelable {
         this.day = day;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,6 +138,7 @@ public class DailyWeather implements Parcelable {
         dest.writeInt(temperatureMin);
         dest.writeInt(temperatureMax);
         dest.writeString(weekSummary);
+        dest.writeString(icon);
     }
 
     public DailyWeather(Parcel in) {
@@ -138,6 +149,7 @@ public class DailyWeather implements Parcelable {
         temperatureMin = in.readInt();
         temperatureMax = in.readInt();
         weekSummary = in.readString();
+        icon = in.readString();
     }
 
     @Ignore

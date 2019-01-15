@@ -23,26 +23,28 @@ import android.os.Parcelable;
 public class HourlyWeather implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     public int id;
+    private String icon;
     private String hour;
     private String summary;
     private double humidity;
     private int temperature;
 
-    public HourlyWeather(){
+    public HourlyWeather() {
 
     }
 
-     public HourlyWeather(String timezone,String summary,double humidity,double temperature,long unixTime){
-         this.summary = summary;
-         this.temperature = (int)temperature;
-         this.hour = Useful.formatTime(unixTime,timezone,"h:mm");
-         this.humidity = humidity;
-     }
+    public HourlyWeather(String timezone, String summary, double humidity, double temperature, long unixTime,String icon) {
+        this.summary = summary;
+        this.temperature = (int) temperature;
+        this.hour = Useful.formatTime(unixTime, timezone, "h:mm");
+        this.humidity = humidity;
+        this.icon = icon;
+    }
 
     /**
-     *    -----------------------------------special Creator ---------------------------
-     *    !!!!!!!!! REMEMBER THAT THE THE NAME OF THE CREATOR MUST BE IN UPPERCASE LETTERS
-     *    OTHERWISE IT DOES NOT WORK ,THROWS AN ERROR
+     * -----------------------------------special Creator ---------------------------
+     * !!!!!!!!! REMEMBER THAT THE THE NAME OF THE CREATOR MUST BE IN UPPERCASE LETTERS
+     * OTHERWISE IT DOES NOT WORK ,THROWS AN ERROR
      */
     @Ignore
     public static Creator CREATOR = new Creator() {
@@ -68,11 +70,13 @@ public class HourlyWeather implements Parcelable {
         dest.writeString(summary);
         dest.writeDouble(humidity);
         dest.writeInt(temperature);
+        dest.writeString(icon);
     }
 
     /**
      * BE VARY CAREFUL BECAUSE THE ORDER BY WHICH THE
      * VALUES HAS BEEN WRITTEN TO THE PARCEL MATTERS
+     *
      * @param source
      */
     public HourlyWeather(Parcel source) {
@@ -80,6 +84,7 @@ public class HourlyWeather implements Parcelable {
         this.summary = source.readString();
         this.humidity = source.readDouble();
         this.temperature = source.readInt();
+        this.icon = source.readString();
     }
 
     /**
@@ -126,5 +131,13 @@ public class HourlyWeather implements Parcelable {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

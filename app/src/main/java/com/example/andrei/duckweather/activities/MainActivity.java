@@ -1,13 +1,16 @@
 package com.example.andrei.duckweather.activities;
 
 import android.app.Activity;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +24,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public static final String KEY_PARCELABLE_HOURLY_ARRAY = "HOURLY_ARRAY";
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final int REQUEST_CODE = 1;
+    private ImageView summaryIcon;
     private TextView temperatureTextView;
     private TextView timeTextView;
     private TextView summaryTextView;
@@ -108,7 +113,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void getDatabaseDao() {
         AppDatabase appDatabase = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class,"room_database").build();
+                AppDatabase.class,"room_database")
+                .addMigrations(MIGRATION_1_2)
+                .build();
         dao = appDatabase.dao();
     }
 
@@ -129,6 +136,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
          latitude = sharedPreferences.getString(Constraints.KEY_LATITUDE_SHARED_PREFERENCES,"53.4808");
          longitude = sharedPreferences.getString(Constraints.KEY_LONGITUDE_SHARED_PREFERENCES,"2.2426");
          locationName = sharedPreferences.getString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,"Manchester");
+         isAppFullscreen = sharedPreferences.getBoolean(Constraints.KEY_APP_FULLSCREEN,false);
+         if(isAppFullscreen){
+             makeAppFullscreen();
+         }
          locationNameTextView.setText(locationName);
 
     }
@@ -138,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         editor.putString(Constraints.KEY_LONGITUDE_SHARED_PREFERENCES,longitude);
         editor.putString(Constraints.KEY_LATITUDE_SHARED_PREFERENCES,latitude);
         editor.putString(Constraints.KEY_LOCATION_SHARED_PREFERENCES,locationName);
+        editor.putBoolean(Constraints.KEY_APP_FULLSCREEN,isAppFullscreen);
         editor.apply();
         Toast.makeText(this, "Location change successfully", Toast.LENGTH_SHORT).show();
     }
@@ -158,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         temperatureTextView=findViewById(R.id.temperatureTextView);
         timeTextView=findViewById(R.id.timeTextView);
         summaryTextView=findViewById(R.id.summaryTextView);
+        summaryIcon = findViewById(R.id.summary_icon_main_activity);
         humidityTextView=findViewById(R.id.humidityValueTextView);
         precipitationTextView=findViewById(R.id.precipitationValueTextView);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -176,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()){
                 case R.id.drawer_menu_fullscreen:
-                    enterFullScreen();
+                    changeFullscreenMode();
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
                     return true;
@@ -358,6 +371,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             DailyWeather dailyWeather=new DailyWeather();
             JSONObject day = dailyJsonArray.getJSONObject(i);
 
+            dailyWeather.setIcon(day.getString("icon"));
+
             dailyWeather.setWeekSummary(convertWeekSummary(daily.getString("summary")));
 
             dailyWeather.setDay(Useful.formatTime(
@@ -411,7 +426,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                                 currentHourJson.getString("summary"),
                                 currentHourJson.getDouble("humidity"),
                                 currentHourJson.getDouble("temperature"),
-                                currentHourJson.getLong("time")
+                                currentHourJson.getLong("time"),
+                                currentHourJson.getString("icon")
             );
 
         }
@@ -427,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
      */
     private void updateUI() {
         CurrentWeather currentWeather = forecast.getCurrentWeather();
+        summaryIcon.setImageResource(Useful.getImageId(currentWeather.getIcon()));
         locationNameTextView.setText(locationName);
         timeTextView.setText(currentWeather.getTimeAsString());
         temperatureTextView.setText("" + currentWeather.getTemperature());
@@ -453,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         JSONObject jsonObject=new JSONObject(jsonData);
         currentWeather.setTimezone(jsonObject.getString("timezone"));
         JSONObject currently = jsonObject.getJSONObject("currently");
+        currentWeather.setIcon(currently.getString("icon"));
         currentWeather.setHumidity(currently.getDouble("humidity"));
         currentWeather.setPrecipitationProbability(currently.getDouble("precipProbability"));
         currentWeather.setSummary(currently.getString("summary"));
@@ -511,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
      * the app should enter full screen
      * or exit fullscreen
      */
-    private void enterFullScreen() {
+    private void changeFullscreenMode() {
         if(isAppFullscreen){
             exitFullscreen();
             isAppFullscreen = false;
@@ -551,4 +569,18 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
         swipeRefreshLayout.setRefreshing(false);
     }
+
+    /**
+     * THERE IS NOT THE TYPE STRING IN ROOM ,ONLY TEXT
+     * THE MIGRATION CAN BE EXECUTED MULTIPLE TIMES
+     *IT DOES NOT GIVE YOU AN ERROR
+     */
+    private static final Migration MIGRATION_1_2 = new Migration(1,2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("ALTER TABLE current_weather ADD COLUMN icon TEXT");
+              database.execSQL("ALTER TABLE daily_weather ADD COLUMN icon TEXT");
+              database.execSQL("ALTER TABLE hourly_weather ADD COLUMN icon TEXT");
+        }
+    };
 }
