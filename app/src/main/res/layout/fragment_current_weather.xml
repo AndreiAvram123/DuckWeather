@@ -1,0 +1,158 @@
+<android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#134666"
+    android:padding="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/location_text_view_main"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/default_location"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeTextView"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/location_text_view_main"
+            tools:text="......." />
+
+        <TextView
+            android:id="@+id/temperatureTextView"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="80sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/summaryTextView"
+            tools:text=".." />
+
+        <TextView
+            android:id="@+id/summaryTextView"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeTextView"
+            tools:text="..." />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="112dp"
+            app:layout_constraintBottom_toTopOf="@+id/precipitationLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/temperatureTextView"
+            app:srcCompat="@drawable/degree" />
+
+        <TextView
+            android:id="@+id/temperatureMaxLabel"
+            style="@style/default_style_text_view"
+            android:layout_width="103dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/humidityLabel"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toStartOf="@+id/precipitationLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureTextView" />
+
+        <TextView
+            android:id="@+id/humidityValueTextView"
+            style="@style/default_style_text_view"
+            android:layout_width="39dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="88dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureMaxLabel"
+            app:layout_constraintVertical_bias="0.028"
+            tools:text=".." />
+
+        <TextView
+            android:id="@+id/precipitationValueTextView"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/humidityValueTextView"
+            app:layout_constraintTop_toBottomOf="@+id/precipitationLabel"
+            app:layout_constraintVertical_bias="0.032"
+            tools:text="..." />
+
+        <TextView
+            android:id="@+id/precipitationLabel"
+            style="@style/default_style_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="64dp"
+            android:text="@string/precipitationLabel"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureTextView" />
+
+
+        <ImageView
+            android:id="@+id/icon_current_weather"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/timeTextView"
+            app:layout_constraintTop_toBottomOf="@+id/location_text_view_main"
+            app:srcCompat="@drawable/sunny" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -6,7 +6,7 @@ import android.arch.persistence.room.Query;
 
 
 @android.arch.persistence.room.Dao
-public interface Dao {
+public interface DatabaseInterface {
 
     @Query("DELETE FROM current_weather")
     void deleteAllDataFromCurrentWeather();
@@ -18,21 +18,21 @@ public interface Dao {
     void deleteAllDataFromDailyWeather();
 
     @Query("SELECT * FROM current_weather")
-     CurrentWeather getCurrentWeather();
+    CurrentWeather getCurrentWeather();
 
     @Query("SELECT * FROM daily_weather")
-     DailyWeather[] getCurrentWeekWeather();
+    DailyWeather[] getCurrentWeekWeather();
 
     @Query("SELECT * FROM hourly_weather")
-     HourlyWeather[] getTwoDaysWeather();
+    HourlyWeather[] getTwoDaysWeather();
 
     @Insert
-     void insertCurrentWeather(CurrentWeather currentWeather);
+    void insertCurrentWeather(CurrentWeather currentWeather);
 
     @Insert
-     void insertCurrentWeekWeather(DailyWeather[] weekWeather);
+    void insertCurrentWeekWeather(DailyWeather[] weekWeather);
 
     @Insert
-     void insertTwoDaysWeather(HourlyWeather[] twoDaysWeather);
+    void insertTwoDaysWeather(HourlyWeather[] twoDaysWeather);
 
 }

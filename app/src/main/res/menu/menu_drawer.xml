@@ -14,9 +14,5 @@
         android:icon = "@drawable/ic_fullscreen_black_24dp"
 
         />
-        <item android:id="@+id/drawer_save_settings"
-              android:title="Save"
-              android:icon="@drawable/ic_save_black_24dp"
-            />
    </group>
 </menu>

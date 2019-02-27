@@ -36,7 +36,7 @@ public class HourlyWeather implements Parcelable {
     public HourlyWeather(String timezone, String summary, double humidity, double temperature, long unixTime,String icon) {
         this.summary = summary;
         this.temperature = (int) temperature;
-        this.hour = Useful.formatTime(unixTime, timezone, "h:mm");
+        this.hour = Utilities.formatTime(unixTime, timezone, "h:mm");
         this.humidity = humidity;
         this.icon = icon;
     }

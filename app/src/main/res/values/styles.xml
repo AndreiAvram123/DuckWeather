@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#0000CD</item>
+        <item name="colorPrimary">#134666</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -21,7 +21,7 @@
     </style>
 
     <style name="default_style_text_view">
-        <item name="android:textColor">#ffffff</item>
+        <item name="android:textColor">#FFE700</item>
         <item name="android:textSize">20sp </item>
         <item name="android:gravity">center</item>
 

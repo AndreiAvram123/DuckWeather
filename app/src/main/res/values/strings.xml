@@ -8,7 +8,7 @@
     <string name="default_location">Manchester</string>
     <string name="daily_forecast_button">DAILY</string>
     <string name="key_for_dailyWeather_array">daily_weather_array</string>
-    <string name="secretKey">b9e08249fab5cb0a5a5372bcea7bf54e</string>
+    <string name="apiKey">b9e08249fab5cb0a5a5372bcea7bf54e</string>
     <string name="humidityLabel">Humidity</string>
     <string name="precipitationLabel">Precipitation</string>
     <string name="week_summary_default">Cloudy</string>

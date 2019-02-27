@@ -1,19 +1,13 @@
 package com.example.andrei.duckweather.model;
 
 /**
- * This class contains 3 objects:
- * CurrentWeather
- * DailyWeather
- * HourlyWeather
+ * This class models the Forecast
+ * of an entire week
  */
 public class Forecast {
     private CurrentWeather currentWeather;
     private DailyWeather[] currentWeekWeather;
-    private HourlyWeather[] twoDaysWeather;
-    public CurrentWeather getCurrentWeather() {
-        return currentWeather;
-    }
-
+    private HourlyWeather[] hourlyWeather;
 
 
     public void setCurrentWeather(CurrentWeather currentWeather) {
@@ -24,17 +18,20 @@ public class Forecast {
         this.currentWeekWeather = currentWeekWeather;
     }
 
-    public void setTwoDaysWeather(HourlyWeather[]twoDaysWeather){
-        this.twoDaysWeather = twoDaysWeather;
+    public void setHourlyWeather(HourlyWeather[] hourlyWeather) {
+        this.hourlyWeather = hourlyWeather;
     }
 
     public DailyWeather[] getCurrentWeekWeather() {
         return currentWeekWeather;
     }
 
-    public HourlyWeather[] getTwoDaysWeather(){
-        return twoDaysWeather;
+    public HourlyWeather[] getHourlyWeather() {
+        return hourlyWeather;
     }
 
+    public CurrentWeather getCurrentWeather() {
+        return currentWeather;
+    }
 
 }
