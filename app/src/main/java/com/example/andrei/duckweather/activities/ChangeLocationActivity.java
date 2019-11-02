@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,12 +27,16 @@ import com.example.andrei.duckweather.R;
 import com.example.andrei.duckweather.model.Constraints;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -206,7 +211,10 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
                            .title("Current Position")
                             .visible(true)
             );
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
+        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                latLng,15);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(location);
 
     }
 
@@ -219,7 +227,10 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
             mMap.clear();
             mMap.addMarker(new MarkerOptions()
                     .position(latLng));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
+            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
+                    latLng,15);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(location);
             displayLocation();
 
         }
@@ -244,9 +255,11 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
              Geocoder geocoder = new Geocoder(ChangeLocationActivity.this,Locale.getDefault());
              try {
                  List<Address> addresses = geocoder.getFromLocation(latLngs[0].latitude,latLngs[0].longitude,1);
-                 if(addresses.get(0).getLocality()!=null)
-                     return addresses.get(0).getLocality();
-                 else return   addresses.get(0).getFeatureName();
+
+                 if(addresses.get(0).getAddressLine(0)!=null) {
+                     return addresses.get(0).getAddressLine(0);
+                 }
+                 else return  addresses.get(0).getFeatureName();
              } catch (IOException e) {
                  e.printStackTrace();
              }
