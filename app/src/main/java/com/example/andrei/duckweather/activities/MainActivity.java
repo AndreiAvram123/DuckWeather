@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements CurrentWeatherFra
         new AlertDialog.Builder(this)
                 .setTitle("CHANGE LOCATION")
                 .setMessage("Do you want to change you current location to " + "\"" + locationName + "\"? " +
-                        "\nChanges will take place after you restart the app.")
+                        "\nCHANGES WILL TAKE PLACE AFTER YOU RESTART THE APP.")
                 .setPositiveButton("Yes,please", (dialog, which) -> saveSettings())
                 .setNegativeButton("NO", null)
                 .show();
