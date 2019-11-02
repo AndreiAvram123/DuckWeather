@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,14 +38,14 @@ import java.util.List;
 import java.util.Locale;
 
 public class ChangeLocationActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener
-        , LocationListener ,GoogleMap.OnMapClickListener {
+        , LocationListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private TextView locationTextView;
     private ProgressBar loadingMap;
     private TextView loadingMessage;
     private Location currentLocation;
-    private static final int APP_REQUEST_PERMISSIONS =1;
+    private static final int APP_REQUEST_PERMISSIONS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +65,12 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private void updateLocationInApp() {
-        if(currentLocation != null) {
+        if (currentLocation != null) {
             Intent returnIntent = new Intent();
             returnIntent.putExtra(Constraints.KEY_LOCATION_REQUEST_LOCATION, locationTextView.getText().toString());
-            returnIntent.putExtra(Constraints.KEY_LATITUDE_REQUEST_LOCATION,currentLocation.getLatitude()+"");
-            returnIntent.putExtra(Constraints.KEY_LONGITUDE_REQUEST_LOCATION,currentLocation.getLongitude()+"");
-            setResult(Activity.RESULT_OK,returnIntent);
+            returnIntent.putExtra(Constraints.KEY_LATITUDE_REQUEST_LOCATION, currentLocation.getLatitude() + "");
+            returnIntent.putExtra(Constraints.KEY_LONGITUDE_REQUEST_LOCATION, currentLocation.getLongitude() + "");
+            setResult(Activity.RESULT_OK, returnIntent);
             finish();
         }
     }
@@ -90,31 +91,50 @@ public class ChangeLocationActivity extends FragmentActivity implements OnMapRea
         mMap.setOnMapClickListener(this);
         //check if permissions have been granted
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {    //if so request location
-             requestLocation();
-        }else {
-             //if the permission has not been granted for the first time
+                && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {    //if so request location
+            requestLocation();
+        } else {
+            //if the permission has not been granted for the first time
             //we try to display a message to the user explaining why we
             //need that particular permission,very helpful method
-            if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Toast.makeText(this, "Location permission is needed in order for the app to work ", Toast.LENGTH_SHORT).show();
             }
             //the way we request permissions
             //this is not gonna be executed if the user explicitly does not want
             //to give this permission
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},
-                   APP_REQUEST_PERMISSIONS);
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    APP_REQUEST_PERMISSIONS);
         }
 
 
     }
 
     private void requestLocation() {
-        if(isGpsEnabled()) {
+        if (isGpsEnabled()) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
         }else{
           new AlertDialog.Builder(this)
